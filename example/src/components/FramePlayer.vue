@@ -1,10 +1,19 @@
 <template>
 	<div class="frame-player">
-		<img v-for="(image, frame) in frameImages"
-		     class="frame-image"
-		     :class="{'current-frame': currentFrame === frame}"
-		     :src="image"
-		/>
+		<div v-if="mode === 'visible'" class="frame-images mode-visible">
+			<img v-for="(image, frame) in frameImages"
+			     class="frame-image"
+			     :class="{'current-frame': currentFrame === frame}"
+			     :src="image"
+			/>
+		</div>
+		<div v-if="mode === 'opacity'" class="frame-images mode-opacity">
+			<img v-for="(image, frame) in frameImages"
+			     class="frame-image"
+			     :class="{'current-frame': currentFrame === frame}"
+			     :src="image"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -16,6 +25,7 @@
     },
     data() {
       return {
+        mode: 'visible', // unique/visible/opacity/canvas
         frameImages: [],
         currentFrame: 0,
         frameLength: 0,
@@ -30,8 +40,10 @@
     },
     methods: {},
     mounted() {
-      console.log( 'config', this.config )
-      const { initialImages, length } = this.config;
+      // console.log( 'config', this.config )
+      const { mode, initialImages, length } = this.config;
+      this.mode = mode;
+
       let frameImages = [];
       if ( typeof initialImages === 'function' ) {
         for ( let i = 0; i < length; ++i ) {
@@ -54,7 +66,7 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-	.frame-player {
+	.frame-images {
 		position: relative;
 		width: 100%;
 		height: 100%;
@@ -64,10 +76,25 @@
 			display: block;
 			width: 100%;
 			height: 100%;
-			opacity: 0;
+		}
 
-			&.current-frame {
-				opacity: 1;
+		&.mode-visible {
+			.frame-image {
+				display: none;
+
+				&.current-frame {
+					display: block;
+				}
+			}
+		}
+
+		&.mode-opacity {
+			.frame-image {
+				opacity: 0;
+
+				&.current-frame {
+					opacity: 1;
+				}
 			}
 		}
 	}

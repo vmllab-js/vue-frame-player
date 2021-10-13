@@ -21,11 +21,14 @@
     mounted() {
       // let initialImages = [];
       // for ( let i = 1; i <= 40; ++i ) {
-      //   initialImages.push( `/public/bg/${i}.jpg` );
+      //   initialImages.push( require( `../assets/bg/${i}.jpg` ) );
       // }
+      // this.config = {
+      //   initialImages
+      // };
       this.config = {
+        mode: 'opacity',
         length: 40,
-        // initialImages
         initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` )
       };
     }
