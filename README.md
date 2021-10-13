@@ -111,4 +111,4 @@ framePlayer.on("play",function () {
 })
 ```
 ## Author
-VML-LAB iorilp, RhineLiu
+VML-LAB RhineLiu
