@@ -21,7 +21,7 @@ module.exports = {
         fallback: {
           loader: 'file-loader',
           options: {
-            name: 'img/[name].[hash].[ext]'
+            name: 'img/[path][name].[hash].[ext]'
           }
         }
       } )
