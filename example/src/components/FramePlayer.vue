@@ -1,25 +1,25 @@
 <template>
 	<div class="frame-player">
-		<div v-if="mode === 'unique'" class="frame-ctnr mode-unique">
+		<div v-if="imageMode === 'unique'" class="frame-ctnr mode-unique">
 			<img class="frame-image"
 			     :src="frameImages[currentFrame]"
 			/>
 		</div>
-		<div v-else-if="mode === 'visible'" class="frame-ctnr mode-visible">
+		<div v-else-if="imageMode === 'visible'" class="frame-ctnr mode-visible">
 			<img v-for="(image, frame) in frameImages"
 			     class="frame-image"
 			     :class="{'current-frame': currentFrame === frame}"
 			     :src="image"
 			/>
 		</div>
-		<div v-else-if="mode === 'opacity'" class="frame-ctnr mode-opacity">
+		<div v-else-if="imageMode === 'opacity'" class="frame-ctnr mode-opacity">
 			<img v-for="(image, frame) in frameImages"
 			     class="frame-image"
 			     :class="{'current-frame': currentFrame === frame}"
 			     :src="image"
 			/>
 		</div>
-		<div v-show="mode === 'canvas'" class="frame-ctnr mode-canvas">
+		<div v-show="imageMode === 'canvas'" class="frame-ctnr mode-canvas">
 			<canvas class="frame-canvas" ref="canvas"></canvas>
 		</div>
 	</div>
@@ -33,37 +33,93 @@
     },
     data() {
       return {
-        mode: 'visible', // unique/visible/opacity/canvas
+        imageMode: 'visible', // unique/visible/opacity/canvas
+        playMode: 'normal', // normal/loop/yoyo
         frameImages: [],
         currentFrame: 0,
         frameLength: 0,
         fps: 20,
         paused: false,
-        loop: false,
-        yoyo: false,
-        jumpStep: 1,
+        playStep: 1,
+        playDirection: 1,
         events: {},
       }
+    },
+    mounted() {
+      // console.log( 'config', this.config )
+      this.set( this.config );
+
+      // 初始化所有帧
+      const { initialImages, length } = this.config;
+      let frameImages = [];
+      if ( typeof initialImages === 'function' ) {
+        for ( let i = 0; i < length; ++i ) {
+          frameImages.push( initialImages( i, length ) );
+        }
+      } else {
+        frameImages = [ ...initialImages ];
+      }
+      this.frameImages = frameImages;
+      this.frameLength = frameImages.length;
+
+      // 启动更新循环
+      this.__timer();
+    },
+    destroyed() {
+      window.cancelAnimationFrame( this._timer );
     },
     methods: {
       set( setting ) {
         if ( setting.fps ) this.fps = setting.fps;
-        if ( setting.loop ) this.loop = setting.loop;
-        if ( setting.yoyo ) this.yoyo = setting.yoyo;
-        if ( setting.mode ) {
-          this.mode = setting.mode;
+        if ( setting.playMode ) this.playMode = setting.playMode;
+        if ( setting.imageMode ) {
+          this.imageMode = setting.imageMode;
           // todo:
         }
       },
       __timer() {
         this._timer = window.requestAnimationFrame( this.__timer );
 
+        if ( this.paused ) return;
+
         // 更新当前帧
-        if ( ++this.currentFrame >= this.frameLength ) {
-          this.currentFrame = 0;
+        const now = Date.now();
+        if ( !this._lastFrameTime ) {
+          this._lastFrameTime = now;
+          return;
+        }
+        const interval = 1000 / this.fps;
+        if ( now - this._lastFrameTime < interval ) return;
+        this._lastFrameTime += interval;
+        if ( now - this._lastFrameTime > interval ) this._lastFrameTime = now;
+        let nextFrame = this.currentFrame + this.playStep * this.playDirection;
+        if ( nextFrame >= this.frameLength ) {
+          switch ( this.playMode ) {
+            case 'normal':
+              this.paused = true;
+              break;
+            case 'loop':
+              this.currentFrame = 0;
+              break;
+            case 'yoyo':
+              this.playDirection *= -1;
+              break;
+          }
+        } else if ( nextFrame < 0 ) {
+          switch ( this.playMode ) {
+            case 'normal':
+            case 'loop':
+              this.paused = true;
+              break;
+            case 'yoyo':
+              this.playDirection *= -1;
+              break;
+          }
+        } else {
+          this.currentFrame = nextFrame;
         }
 
-        if ( this.mode === 'canvas' ) {
+        if ( this.imageMode === 'canvas' ) {
           this.__updateCanvas();
         }
       },
@@ -83,29 +139,6 @@
         };
         img.src = this.frameImages[ this.currentFrame ];
       },
-    },
-    mounted() {
-      // console.log( 'config', this.config )
-      const { mode, initialImages, length } = this.config;
-      this.mode = mode;
-
-      // 初始化所有帧
-      let frameImages = [];
-      if ( typeof initialImages === 'function' ) {
-        for ( let i = 0; i < length; ++i ) {
-          frameImages.push( initialImages( i, length ) );
-        }
-      } else {
-        frameImages = [ ...initialImages ];
-      }
-      this.frameImages = frameImages;
-      this.frameLength = frameImages.length;
-
-      // 启动更新循环
-      this.__timer();
-    },
-    destroyed() {
-      window.cancelAnimationFrame( this._timer );
     },
   }
 </script>

@@ -27,9 +27,11 @@
       //   initialImages
       // };
       this.config = {
-        mode: 'canvas',
+        imageMode: 'canvas',
+        playMode: 'yoyo',
         length: 40,
-        initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` )
+        initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
+        fps: 30,
       };
     }
   }
