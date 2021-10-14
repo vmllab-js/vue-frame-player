@@ -15,14 +15,11 @@
 				<div class="btn goto" @click="goto(20)">goto(20)</div>
 			</div>
 			<div>
-				<div class="btn playMode" :class="{unactive:playMode!=='normal'}" @click="setPlayMode('normal')">
-					normal
-				</div>
-				<div class="btn playMode" :class="{unactive:playMode!=='loop'}" @click="setPlayMode('loop')">
-					loop
-				</div>
-				<div class="btn playMode" :class="{unactive:playMode!=='yoyo'}" @click="setPlayMode('yoyo')">
-					yoyo
+				<div v-for="mode in playModes"
+				     class="btn playMode"
+				     :class="{unactive:playMode!==mode}"
+				     @click="setPlayMode(mode)">
+					{{mode}}
 				</div>
 			</div>
 			<div>
@@ -53,6 +50,7 @@
         fps: 0,
         imageModes: [ 'unique', 'visible', 'opacity', 'canvas' ],
         imageMode: '',
+        playModes: [ 'normal', 'loop', 'yoyo' ],
         playMode: '',
       }
     },
@@ -77,12 +75,24 @@
         this.fps = player.fps;
         this.imageMode = player.imageMode;
         this.playMode = player.playMode;
-        player.on( 'play', () => {
-          this.paused = false;
-        } );
-        player.on( 'pause', () => {
-          this.paused = true;
-        } );
+        player
+          .on( 'play', () => {
+            console.log( 'on play' )
+            this.paused = false;
+          } )
+          .on( 'pause', () => {
+            console.log( 'on pause' )
+            this.paused = true;
+          } )
+          .on( 'ended', () => {
+            console.log( 'on ended' )
+          } )
+          .on( 'loop', () => {
+            console.log( 'on loop' )
+          } )
+          .on( 'yoyo', () => {
+            console.log( 'on yoyo' )
+          } );
       } );
     },
     methods: {

@@ -67,12 +67,17 @@
     },
     destroyed() {
       window.cancelAnimationFrame( this._timer );
+      this.off();
     },
     methods: {
       set( setting ) {
         if ( setting.fps && setting.fps > 0 ) this.fps = setting.fps;
-        if ( setting.playMode ) this.playMode = setting.playMode;
+        if ( setting.playMode ) {
+          this.playMode = setting.playMode;
+          this.playDirection = 1;
+        }
         if ( setting.imageMode ) this.imageMode = setting.imageMode;
+        return this;
       },
       __timer() {
         this._timer = window.requestAnimationFrame( this.__timer );
@@ -94,12 +99,16 @@
           switch ( this.playMode ) {
             case 'normal':
               this.paused = true;
+              this.trigger( 'pause', { from: 'ended', current: this.currentFrame } );
+              this.trigger( 'ended', { from: 'ended', current: this.currentFrame } );
               break;
             case 'loop':
               this.currentFrame = 0;
+              this.trigger( 'loop', { from: 'loop', current: this.currentFrame } );
               break;
             case 'yoyo':
               this.playDirection *= -1;
+              this.trigger( 'yoyo', { from: 'yoyo', current: this.currentFrame } );
               break;
           }
         } else if ( nextFrame < 0 ) {
@@ -107,9 +116,11 @@
             case 'normal':
             case 'loop':
               this.paused = true;
+              this.trigger( 'pause', { from: 'ended', current: this.currentFrame } );
               break;
             case 'yoyo':
               this.playDirection *= -1;
+              this.trigger( 'yoyo', { from: 'yoyo', current: this.currentFrame } );
               break;
           }
         } else {
@@ -134,29 +145,61 @@
         };
         img.src = this.frameImages[ this.currentFrame ];
       },
+      // 播放控制
       play() {
         this.paused = false;
+        this.trigger( 'play', { from: 'play', current: this.currentFrame } );
+        return this;
       },
       pause() {
         this.paused = true;
+        this.trigger( 'pause', { from: 'pause', current: this.currentFrame } );
+        return this;
       },
       toggle() {
         this.paused = !this.paused;
+        this.trigger( this.paused ? 'pause' : 'play', { from: 'toggle', current: this.currentFrame } );
+        return this;
       },
       stop() {
         this.goto( 0 );
         this.paused = true;
+        this.trigger( 'pause', { from: 'stop', current: this.currentFrame } );
+        return this;
       },
       replay() {
         this.goto( 0 );
         this.paused = false;
+        this.trigger( 'play', { from: 'replay', current: this.currentFrame } );
+        return this;
       },
       goto( frame ) {
         this.currentFrame = frame;
         if ( this.imageMode === 'canvas' ) this.__updateCanvas();
+        this.trigger( 'goto', { from: 'goto', current: this.currentFrame } );
+        return this;
       },
+      // 事件管理
       on( eventName, callback ) {
-        console.log(this.events)
+        if ( !this.events[ eventName ] ) this.events[ eventName ] = [];
+        this.events[ eventName ].push( callback );
+        return this;
+      },
+      off( eventName, callback ) {
+        if ( !eventName ) {
+          this.events = {};
+        } else if ( !callback ) {
+          this.events[ eventName ] = [];
+        } else if ( this.events[ eventName ] ) {
+          this.events[ eventName ] = this.events[ eventName ].filter( e => e !== callback );
+        }
+        return this;
+      },
+      trigger( eventName, detail ) {
+        if ( this.events[ eventName ] ) {
+          this.events[ eventName ].forEach( e => e( detail ) );
+        }
+        return this;
       },
     },
   }
