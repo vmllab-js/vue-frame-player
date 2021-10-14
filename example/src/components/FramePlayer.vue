@@ -1,13 +1,18 @@
 <template>
 	<div class="frame-player">
-		<div v-if="mode === 'visible'" class="frame-images mode-visible">
+		<div v-if="mode === 'unique'" class="frame-images mode-unique">
+			<img class="frame-image"
+			     :src="frameImages[currentFrame]"
+			/>
+		</div>
+		<div v-else-if="mode === 'visible'" class="frame-images mode-visible">
 			<img v-for="(image, frame) in frameImages"
 			     class="frame-image"
 			     :class="{'current-frame': currentFrame === frame}"
 			     :src="image"
 			/>
 		</div>
-		<div v-if="mode === 'opacity'" class="frame-images mode-opacity">
+		<div v-else-if="mode === 'opacity'" class="frame-images mode-opacity">
 			<img v-for="(image, frame) in frameImages"
 			     class="frame-image"
 			     :class="{'current-frame': currentFrame === frame}"

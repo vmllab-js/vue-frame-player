@@ -27,7 +27,7 @@
       //   initialImages
       // };
       this.config = {
-        mode: 'opacity',
+        mode: 'unique',
         length: 40,
         initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` )
       };
