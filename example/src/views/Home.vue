@@ -9,12 +9,17 @@
 				<div class="btn fps" @click="setFPS(fps+5)">+5</div>
 			</div>
 			<div>
-				<div class="btn fps" @click="setPlayStep(playStep-1)">-1</div>
-				<div class="btn fps">playStep:{{playStep}}</div>
-				<div class="btn fps" @click="setPlayStep(playStep+1)">+1</div>
+				<div class="btn play-step" @click="setPlayStep(playStep-1)">-1</div>
+				<div class="btn play-step">playStep:{{playStep}}</div>
+				<div class="btn play-step" @click="setPlayStep(playStep+1)">+1</div>
 			</div>
 			<div>
-				<div class="btn play" @click="togglePlay">{{paused?'play':'pause'}}</div>
+				<div class="btn play-speed" @click="setPlaySpeed(-3)">&lt;&lt;rewind</div>
+				<div class="btn play" @click="play">play</div>
+				<div class="btn play-speed" @click="setPlaySpeed(3)">forward&gt;&gt;</div>
+			</div>
+			<div>
+				<div class="btn play" @click="pause">pause</div>
 				<div class="btn stop" @click="stop">stop</div>
 				<div class="btn replay" @click="replay">replay</div>
 				<div class="btn goto" @click="goto(20)">goto(20)</div>
@@ -54,6 +59,7 @@
         paused: false,
         fps: 0,
         playStep: 1,
+        playSpeed: 1,
         imageModes: [ 'unique', 'visible', 'opacity', 'canvas' ],
         imageMode: '',
         playModes: [ 'normal', 'loop', 'yoyo' ],
@@ -75,12 +81,14 @@
         initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
         fps: 30,
         playStep: 1,
+        playSpeed: 1,
       };
 
       setTimeout( () => {
         const player = this.$refs.theFramePlayer;
         this.fps = player.fps;
         this.playStep = player.playStep;
+        this.playSpeed = player.playSpeed;
         this.imageMode = player.imageMode;
         this.playMode = player.playMode;
         player
@@ -117,9 +125,18 @@
         player.set( { playStep } );
         this.playStep = player.playStep;
       },
-      togglePlay() {
+      setPlaySpeed( playSpeed ) {
         const player = this.$refs.theFramePlayer;
-        player.toggle();
+        player.set( { playSpeed } ).play();
+        this.playSpeed = player.playSpeed;
+      },
+      play() {
+        const player = this.$refs.theFramePlayer;
+        player.set( { playSpeed: 1 } ).play();
+      },
+      pause() {
+        const player = this.$refs.theFramePlayer;
+        player.pause();
       },
       stop() {
         const player = this.$refs.theFramePlayer;
@@ -127,7 +144,7 @@
       },
       replay() {
         const player = this.$refs.theFramePlayer;
-        player.replay();
+        player.set( { playSpeed: 1 } ).replay();
       },
       goto( frame ) {
         const player = this.$refs.theFramePlayer;

@@ -41,6 +41,7 @@
         fps: 20,
         paused: false,
         playStep: 1,
+        playSpeed: 1,
         playDirection: 1,
         events: {},
       }
@@ -73,6 +74,7 @@
       set( setting ) {
         if ( setting.fps > 0 ) this.fps = setting.fps;
         if ( setting.playStep > 0 ) this.playStep = setting.playStep;
+        if ( setting.playSpeed ) this.playSpeed = setting.playSpeed;
         if ( setting.playMode ) {
           this.playMode = setting.playMode;
           this.playDirection = 1;
@@ -91,11 +93,11 @@
           this._lastFrameTime = now;
           return;
         }
-        const interval = 1000 / this.fps * this.playStep;
+        const interval = 1000 / this.fps * this.playStep / Math.abs( this.playSpeed );
         if ( now - this._lastFrameTime < interval ) return;
         this._lastFrameTime += interval;
         if ( now - this._lastFrameTime > interval ) this._lastFrameTime = now;
-        let nextFrame = this.currentFrame + this.playStep * this.playDirection;
+        let nextFrame = this.currentFrame + this.playStep * this.playDirection * this.playSpeed / Math.abs( this.playSpeed );
         if ( nextFrame >= this.frameLength ) {
           switch ( this.playMode ) {
             case 'normal':
