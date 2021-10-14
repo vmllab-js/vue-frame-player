@@ -70,12 +70,9 @@
     },
     methods: {
       set( setting ) {
-        if ( setting.fps ) this.fps = setting.fps;
+        if ( setting.fps && setting.fps > 0 ) this.fps = setting.fps;
         if ( setting.playMode ) this.playMode = setting.playMode;
-        if ( setting.imageMode ) {
-          this.imageMode = setting.imageMode;
-          // todo:
-        }
+        if ( setting.imageMode ) this.imageMode = setting.imageMode;
       },
       __timer() {
         this._timer = window.requestAnimationFrame( this.__timer );
@@ -119,9 +116,7 @@
           this.currentFrame = nextFrame;
         }
 
-        if ( this.imageMode === 'canvas' ) {
-          this.__updateCanvas();
-        }
+        if ( this.imageMode === 'canvas' ) this.__updateCanvas();
       },
       __updateCanvas() {
         const canvas = this.$refs.canvas;
@@ -138,6 +133,30 @@
           context.drawImage( img, 0, 0 );
         };
         img.src = this.frameImages[ this.currentFrame ];
+      },
+      play() {
+        this.paused = false;
+      },
+      pause() {
+        this.paused = true;
+      },
+      toggle() {
+        this.paused = !this.paused;
+      },
+      stop() {
+        this.goto( 0 );
+        this.paused = true;
+      },
+      replay() {
+        this.goto( 0 );
+        this.paused = false;
+      },
+      goto( frame ) {
+        this.currentFrame = frame;
+        if ( this.imageMode === 'canvas' ) this.__updateCanvas();
+      },
+      on( eventName, callback ) {
+        console.log(this.events)
       },
     },
   }
