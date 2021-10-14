@@ -9,6 +9,11 @@
 				<div class="btn fps" @click="setFPS(fps+5)">+5</div>
 			</div>
 			<div>
+				<div class="btn fps" @click="setPlayStep(playStep-1)">-1</div>
+				<div class="btn fps">playStep:{{playStep}}</div>
+				<div class="btn fps" @click="setPlayStep(playStep+1)">+1</div>
+			</div>
+			<div>
 				<div class="btn play" @click="togglePlay">{{paused?'play':'pause'}}</div>
 				<div class="btn stop" @click="stop">stop</div>
 				<div class="btn replay" @click="replay">replay</div>
@@ -48,6 +53,7 @@
         config: null,
         paused: false,
         fps: 0,
+        playStep: 1,
         imageModes: [ 'unique', 'visible', 'opacity', 'canvas' ],
         imageMode: '',
         playModes: [ 'normal', 'loop', 'yoyo' ],
@@ -68,11 +74,13 @@
         length: 40,
         initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
         fps: 30,
+        playStep: 1,
       };
 
       setTimeout( () => {
         const player = this.$refs.theFramePlayer;
         this.fps = player.fps;
+        this.playStep = player.playStep;
         this.imageMode = player.imageMode;
         this.playMode = player.playMode;
         player
@@ -92,6 +100,9 @@
           } )
           .on( 'yoyo', () => {
             console.log( 'on yoyo' )
+          } )
+          .on( 'update', ( detail ) => {
+            console.log( 'on update', detail )
           } );
       } );
     },
@@ -100,6 +111,11 @@
         const player = this.$refs.theFramePlayer;
         player.set( { fps } );
         this.fps = player.fps;
+      },
+      setPlayStep( playStep ) {
+        const player = this.$refs.theFramePlayer;
+        player.set( { playStep } );
+        this.playStep = player.playStep;
       },
       togglePlay() {
         const player = this.$refs.theFramePlayer;

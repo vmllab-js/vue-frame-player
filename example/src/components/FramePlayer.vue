@@ -71,7 +71,8 @@
     },
     methods: {
       set( setting ) {
-        if ( setting.fps && setting.fps > 0 ) this.fps = setting.fps;
+        if ( setting.fps > 0 ) this.fps = setting.fps;
+        if ( setting.playStep > 0 ) this.playStep = setting.playStep;
         if ( setting.playMode ) {
           this.playMode = setting.playMode;
           this.playDirection = 1;
@@ -90,7 +91,7 @@
           this._lastFrameTime = now;
           return;
         }
-        const interval = 1000 / this.fps;
+        const interval = 1000 / this.fps * this.playStep;
         if ( now - this._lastFrameTime < interval ) return;
         this._lastFrameTime += interval;
         if ( now - this._lastFrameTime > interval ) this._lastFrameTime = now;
@@ -128,6 +129,8 @@
         }
 
         if ( this.imageMode === 'canvas' ) this.__updateCanvas();
+
+        this.trigger( 'update', { from: 'update', current: this.currentFrame } )
       },
       __updateCanvas() {
         const canvas = this.$refs.canvas;
