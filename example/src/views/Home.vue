@@ -27,7 +27,7 @@
       //   initialImages
       // };
       this.config = {
-        mode: 'unique',
+        mode: 'canvas',
         length: 40,
         initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` )
       };
