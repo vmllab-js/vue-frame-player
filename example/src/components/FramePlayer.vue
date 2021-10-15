@@ -38,7 +38,7 @@
         frameImages: [],
         currentFrame: 0,
         frameLength: 0,
-        fps: 20,
+        fps: 25,
         paused: false,
         playStep: 1,
         playSpeed: 1,

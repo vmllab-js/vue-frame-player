@@ -1,6 +1,6 @@
 <template>
 	<div class="home">
-		<FramePlayer v-if="config" ref="theFramePlayer" :config="config"/>
+		<frame-player v-if="config" ref="theFramePlayer" :config="config"/>
 
 		<div class="controls pa">
 			<div>
