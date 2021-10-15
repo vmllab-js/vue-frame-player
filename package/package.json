@@ -1,8 +1,8 @@
 {
 	"name": "vue-frame-player",
-	"version": "1.0.0",
+	"version": "1.0.4",
 	"description": "image frames player component for vue",
-	"main": "index.js",
+	"main": "dist/index.min.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "webpack-dev-server --hot --inline",

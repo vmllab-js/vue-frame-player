@@ -46,7 +46,8 @@
 
 <script>
   // @ is an alias to /src
-  import FramePlayer from '@/components/FramePlayer.vue'
+  // import FramePlayer from '@/components/FramePlayer.vue'
+  import FramePlayer from 'vue-frame-player'
 
   export default {
     name: 'Home',
