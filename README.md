@@ -17,7 +17,7 @@ npm i --save vue-frame-player
 ## Example
 html:
 ```html
-<frame-player v-if="config" ref="theFramePlayer" :config="{
+<frame-player ref="theFramePlayer" :config="{
   imageMode: 'visible',
   playMode: 'loop',
   fps: 25,
