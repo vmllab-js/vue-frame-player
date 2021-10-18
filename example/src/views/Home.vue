@@ -9,6 +9,8 @@
 			  initialImages: 'https://vmllab-js.github.io/vFramePlayer/image/[frame].jpg',
 			  playStep: 1,
 			  playSpeed: 1,
+			  autoplay: true,
+			  preload: true,
 			}"/>
 			<div class="info">
 				<div class="fps">FPS：{{player.fps}}</div>
@@ -246,6 +248,7 @@
 				background: rgba(0, 35, 20, 1);
 				border-radius: 5px;
 				transition: 0.5s;
+				cursor: pointer;
 
 				&.unactive {
 					background: rgba(0, 35, 20, 0.3);

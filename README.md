@@ -60,6 +60,8 @@ css:
 | `fps`         | `int`             | `25`      | 动画播放帧率，非必选        |
 | `playStep`    | `int`             | `1`       | 动画播放帧间隔，非必选，不能为0 |
 | `playSpeed`   | `float`           | `1`       | 动画播放加速，非必选，可以是负数，不能为0 |
+| `preload`     | `boolean`         | `false`   | 动画图片预加载 |
+| `autoplay`    | `boolean`         | `false`   | 动画自动播放，如果preload为true，就会等到预加载完成才会自动播放 |
 
 ## Methods
 可以使用组件的以下方法控制序列图动画：
