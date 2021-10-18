@@ -14,7 +14,18 @@ npm i --save vue-frame-player
 ## Example
 html:
 ```html
-<frame-player v-if="config" ref="theFramePlayer" :config="config"/>
+<frame-player v-if="config" ref="theFramePlayer" :config="{
+  imageMode: 'visible',
+  playMode: 'loop',
+  fps: 25,
+  length: 150,
+  // initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
+  initialImages: 'https://vmllab-js.github.io/vFramePlayer/image/[frame].jpg',
+  playStep: 1,
+  playSpeed: 1,
+  autoplay: true,
+  preload: true,
+}"/>
 ```
 js:
 ```javascript
@@ -24,20 +35,6 @@ export default {
     name: 'Home',
     components: {
       FramePlayer
-    },
-    data() {
-      return {
-        config: null
-      }
-    },
-    mounted() {
-      this.config = {
-        imageMode: 'canvas',
-        playMode: 'loop',
-        length: 40,
-        initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
-        fps: 30,
-      };
     }
 }
 ```
@@ -55,7 +52,7 @@ css:
 | ------------- |:-----------------:| :------:  | ------------------------------------  |
 | `imageMode`   | `string`          | `visible` | 图片帧显示模式，可选值有unique/visible/opacity/canvas，非必选 |
 | `playMode`    | `string`          | `normal`  | 图片帧播放模式，可选值有normal/loop/yoyo，非必选      |
-| `frameImages` | `array/function`  | none      | 图片序列数组，`必选`。支持图片地址及base64，可传函数并传length，遍历执行该函数 |
+| `frameImages` | `array/function/string`  | none      | 图片序列数组，`必选`。支持图片地址及base64，可传函数并传length，遍历执行该函数；可传模板字符串，自动替换`[frame]`字符串 |
 | `length`      | `int`             | none      | 配合frameImages为function的情况，非必选     |
 | `fps`         | `int`             | `25`      | 动画播放帧率，非必选        |
 | `playStep`    | `int`             | `1`       | 动画播放帧间隔，非必选，不能为0 |
