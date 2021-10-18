@@ -39,7 +39,7 @@
         currentFrame: 0,
         frameLength: 0,
         fps: 25,
-        paused: false,
+        paused: true,
         playStep: 1,
         playSpeed: 1,
         playDirection: 1,
@@ -69,6 +69,15 @@
 
       // 启动更新循环
       this.__timer();
+
+      if ( this.config.preload ) {
+        this.__preload().then( () => {
+          if ( this.config.autoplay ) this.play();
+          this.trigger( 'loaded', { from: 'preload' } );
+        } );
+      } else {
+        if ( this.config.autoplay ) this.play();
+      }
     },
     destroyed() {
       window.cancelAnimationFrame( this._timer );
@@ -154,6 +163,22 @@
         };
         img.src = this.frameImages[ this.currentFrame ];
       },
+      __preload() {
+        return new Promise( ( resolve, reject ) => {
+          let frame = 0;
+          const __loadNext = () => {
+            let img = new Image();
+            img.onload = () => {
+              if ( ++frame < this.frameImages.length ) __loadNext();
+              else resolve();
+            };
+            img.onerror = reject;
+            img.src = this.frameImages[ frame ];
+          };
+
+          __loadNext();
+        } );
+      },
       // 播放控制
       play() {
         this.paused = false;
@@ -220,6 +245,7 @@
 		width: 100%;
 		height: 100%;
 	}
+
 	.frame-ctnr {
 		position: relative;
 		width: 100%;
