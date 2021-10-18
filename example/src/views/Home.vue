@@ -26,6 +26,7 @@
 				<i class="fa fa-stop" @click="stop"></i>
 				<i class="fa fa-forward" @click="setPlaySpeed(3)"></i>
 				<i class="fa fa-repeat" @click="replay"></i>
+				<i class="fa fa-play" @click="goto(20)"> 20</i>
 			</div>
 		</div>
 
@@ -65,9 +66,6 @@
 				</div>
 			</div>
 			<div class="flex">
-			</div>
-			<div>
-				<div class="btn goto" @click="goto(20)">goto(20)</div>
 			</div>
 		</div>
 	</div>
@@ -136,7 +134,7 @@
         this.player.set( { playSpeed: 1 } ).replay();
       },
       goto( frame ) {
-        this.player.goto( frame );
+        this.player.set( { playSpeed: 1 } ).goto( frame ).play();
       },
       setPlayMode( playMode ) {
         this.player.set( { playMode } );
