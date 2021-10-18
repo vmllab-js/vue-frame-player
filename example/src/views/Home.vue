@@ -1,44 +1,73 @@
 <template>
 	<div class="home">
-		<frame-player v-if="config" ref="theFramePlayer" :config="config"/>
+		<div class="box">
+			<frame-player ref="theFramePlayer" :config="{
+			  imageMode: 'visible',
+			  playMode: 'loop',
+			  length: 150,
+			  // initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
+			  initialImages: 'https://vmllab-js.github.io/vFramePlayer/image/[frame].jpg',
+			  playStep: 1,
+			  playSpeed: 1,
+			}"/>
+			<div class="info">
+				<div class="fps">FPS：{{player.fps}}</div>
+				<div class="current">当前帧：{{player.currentFrame}}</div>
+				<div class="direction">方向：{{player.playDirection>0?'正向':'反向'}}</div>
+				<div class="direction">速度：{{player.playSpeed}}X</div>
+			</div>
+			<div class="controls">
+				<div class="process-ctnr">
+					<div class="process" :style="{width:(player.currentFrame/player.frameLength*100)+'%'}"></div>
+				</div>
+				<i class="fa fa-play" @click="play"></i>
+				<i class="fa fa-pause" @click="pause"></i>
+				<i class="fa fa-backward" @click="setPlaySpeed(-3)"></i>
+				<i class="fa fa-stop" @click="stop"></i>
+				<i class="fa fa-forward" @click="setPlaySpeed(3)"></i>
+				<i class="fa fa-repeat" @click="replay"></i>
+			</div>
+		</div>
 
-		<div class="controls pa">
-			<div>
-				<div class="btn fps" @click="setFPS(fps-5)">-5</div>
-				<div class="btn fps">fps:{{fps}}</div>
-				<div class="btn fps" @click="setFPS(fps+5)">+5</div>
+		<div class="config">
+			<div class="flex">
+				<div class="label">playMode:</div>
+				<div class="content">
+					<div v-for="mode in playModes"
+					     class="btn playMode"
+					     :class="{unactive:player.playMode!==mode}"
+					     @click="setPlayMode(mode)">
+						{{mode}}
+					</div>
+				</div>
+			</div>
+			<div class="flex">
+				<div class="label">imageMode:</div>
+				<div class="content">
+					<div v-for="mode in imageModes"
+					     class="btn imageMode"
+					     :class="{unactive:player.imageMode!==mode}"
+					     @click="setImageMode(mode)">
+						{{mode}}
+					</div>
+				</div>
+			</div>
+			<div class="flex">
+				<div class="label">fps: {{player.fps}}</div>
+				<div class="content">
+					<div class="btn fps" @click="setFPS(player.fps-5)">-5</div>
+					<div class="btn fps" @click="setFPS(player.fps+5)">+5</div>
+				</div>
+				<div class="label">playStep: {{player.playStep}}</div>
+				<div class="content">
+					<div class="btn play-step" @click="setPlayStep(player.playStep-1)">-1</div>
+					<div class="btn play-step" @click="setPlayStep(player.playStep+1)">+1</div>
+				</div>
+			</div>
+			<div class="flex">
 			</div>
 			<div>
-				<div class="btn play-step" @click="setPlayStep(playStep-1)">-1</div>
-				<div class="btn play-step">playStep:{{playStep}}</div>
-				<div class="btn play-step" @click="setPlayStep(playStep+1)">+1</div>
-			</div>
-			<div>
-				<div class="btn play-speed" @click="setPlaySpeed(-3)">&lt;&lt;rewind</div>
-				<div class="btn play" @click="play">play</div>
-				<div class="btn play-speed" @click="setPlaySpeed(3)">forward&gt;&gt;</div>
-			</div>
-			<div>
-				<div class="btn play" @click="pause">pause</div>
-				<div class="btn stop" @click="stop">stop</div>
-				<div class="btn replay" @click="replay">replay</div>
 				<div class="btn goto" @click="goto(20)">goto(20)</div>
-			</div>
-			<div>
-				<div v-for="mode in playModes"
-				     class="btn playMode"
-				     :class="{unactive:playMode!==mode}"
-				     @click="setPlayMode(mode)">
-					{{mode}}
-				</div>
-			</div>
-			<div>
-				<div v-for="mode in imageModes"
-				     class="btn imageMode"
-				     :class="{unactive:imageMode!==mode}"
-				     @click="setImageMode(mode)">
-					{{mode}}
-				</div>
 			</div>
 		</div>
 	</div>
@@ -46,8 +75,8 @@
 
 <script>
   // @ is an alias to /src
-  // import FramePlayer from '@/components/FramePlayer.vue'
-  import FramePlayer from 'vue-frame-player'
+  import FramePlayer from '@/components/FramePlayer.vue'
+  // import FramePlayer from 'vue-frame-player'
 
   export default {
     name: 'Home',
@@ -56,115 +85,70 @@
     },
     data() {
       return {
-        config: null,
-        paused: false,
-        fps: 0,
-        playStep: 1,
-        playSpeed: 1,
         imageModes: [ 'unique', 'visible', 'opacity', 'canvas' ],
-        imageMode: '',
         playModes: [ 'normal', 'loop', 'yoyo' ],
-        playMode: '',
+        player: {}
       }
     },
     mounted() {
-      // let initialImages = [];
-      // for ( let i = 1; i <= 40; ++i ) {
-      //   initialImages.push( require( `../assets/bg/${i}.jpg` ) );
-      // }
-      // this.config = {
-      //   initialImages
-      // };
-      this.config = {
-        imageMode: 'canvas',
-        playMode: 'loop',
-        length: 40,
-        initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
-        fps: 30,
-        playStep: 1,
-        playSpeed: 1,
-      };
-
-      setTimeout( () => {
-        const player = this.$refs.theFramePlayer;
-        this.fps = player.fps;
-        this.playStep = player.playStep;
-        this.playSpeed = player.playSpeed;
-        this.imageMode = player.imageMode;
-        this.playMode = player.playMode;
-        player
-          .on( 'play', () => {
-            console.log( 'on play' )
-            this.paused = false;
-          } )
-          .on( 'pause', () => {
-            console.log( 'on pause' )
-            this.paused = true;
-          } )
-          .on( 'ended', () => {
-            console.log( 'on ended' )
-          } )
-          .on( 'loop', () => {
-            console.log( 'on loop' )
-          } )
-          .on( 'yoyo', () => {
-            console.log( 'on yoyo' )
-          } )
-          .on( 'update', ( detail ) => {
-            console.log( 'on update', detail )
-          } );
-      } );
+      const player = this.$refs.theFramePlayer;
+      this.player = player;
+      player
+        .on( 'play', () => {
+          console.log( 'on play' )
+        } )
+        .on( 'pause', () => {
+          console.log( 'on pause' )
+        } )
+        .on( 'ended', () => {
+          console.log( 'on ended' )
+        } )
+        .on( 'loop', () => {
+          console.log( 'on loop' )
+        } )
+        .on( 'yoyo', () => {
+          console.log( 'on yoyo' )
+        } )
+        .on( 'update', ( detail ) => {
+          console.log( 'on update', detail )
+        } );
     },
     methods: {
       setFPS( fps ) {
-        const player = this.$refs.theFramePlayer;
-        player.set( { fps } );
-        this.fps = player.fps;
+        this.player.set( { fps } );
       },
       setPlayStep( playStep ) {
-        const player = this.$refs.theFramePlayer;
-        player.set( { playStep } );
-        this.playStep = player.playStep;
+        this.player.set( { playStep } );
       },
       setPlaySpeed( playSpeed ) {
-        const player = this.$refs.theFramePlayer;
-        player.set( { playSpeed } ).play();
-        this.playSpeed = player.playSpeed;
+        this.player.set( { playSpeed } ).play();
       },
       play() {
-        const player = this.$refs.theFramePlayer;
-        player.set( { playSpeed: 1 } ).play();
+        this.player.set( { playSpeed: 1 } ).play();
       },
       pause() {
-        const player = this.$refs.theFramePlayer;
-        player.pause();
+        this.player.pause();
       },
       stop() {
-        const player = this.$refs.theFramePlayer;
-        player.stop();
+        this.player.stop();
       },
       replay() {
-        const player = this.$refs.theFramePlayer;
-        player.set( { playSpeed: 1 } ).replay();
+        this.player.set( { playSpeed: 1 } ).replay();
       },
       goto( frame ) {
-        const player = this.$refs.theFramePlayer;
-        player.goto( frame );
+        this.player.goto( frame );
       },
       setPlayMode( playMode ) {
-        const player = this.$refs.theFramePlayer;
-        player.set( { playMode } );
-        this.playMode = player.playMode;
+        this.player.set( { playMode } );
       },
       setImageMode( imageMode ) {
-        const player = this.$refs.theFramePlayer;
-        player.set( { imageMode } );
-        this.imageMode = player.imageMode;
+        this.player.set( { imageMode } );
       },
     }
   }
 </script>
 
+<style scoped src="../assets/css/font-awesome.min.css"></style>
 <style lang="scss" scoped>
 	.pa {
 		position: absolute;
@@ -176,30 +160,98 @@
 		top: 0;
 		width: 100%;
 		height: 100%;
-		overflow: hidden;
+		overflow: auto;
 
-		.frame-player {
-			position: absolute;
-			width: 750px;
-			height: 1490px;
+		.box {
+			position: relative;
+			margin: 30px auto 30px auto;
+			width: 640px;
+			height: 1008px;
+			border: 1px solid #000;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+
+			.info {
+				position: absolute;
+				left: 0;
+				top: 0;
+				padding: 10px 20px;
+				width: 200px;
+				font-size: 24px;
+				line-height: 36px;
+				color: #fff;
+				background: rgba(0, 0, 0, 0.5);
+			}
+
+			.controls {
+				position: absolute;
+				background: rgba(0, 0, 0, 0.5);
+				padding: 10px 20px;
+				width: 100%;
+				height: 80px;
+				left: 0;
+				bottom: 0;
+				font-size: 32px;
+				color: #fff;
+				line-height: 60px;
+				box-sizing: border-box;
+
+				.process-ctnr {
+					position: absolute;
+					left: 0;
+					top: -8px;
+					width: 100%;
+					height: 8px;
+					background: #aaaaaa;
+
+					.process {
+						width: 0%;
+						height: 100%;
+						background: #fff;
+						transition: 0.1s;
+					}
+				}
+
+				i {
+					display: inline-block;
+					padding: 15px 20px;
+					cursor: pointer;
+				}
+			}
 		}
 
-		.controls {
-			bottom: 0;
-			width: 100%;
-			text-align: center;
+		.config {
+			margin: 0 auto;
+			width: 640px;
+
+			.flex {
+				display: flex;
+			}
+
+			.label {
+				margin-right: 10px;
+				font-size: 26px;
+				line-height: 60px;
+				color: #fff;
+			}
+
+			.content {
+				flex: 1;
+			}
 
 			.btn {
 				display: inline-block;
-				margin: 10px;
-				padding: 10px 20px;
-				font-size: 40px;
+				margin: 5px;
+				padding: 10px 15px;
+				font-size: 26px;
+				line-height: 30px;
 				color: #fff;
-				background: rgba(0, 35, 20, 0.9);
+				background: rgba(0, 35, 20, 1);
 				border-radius: 5px;
+				transition: 0.5s;
 
 				&.unactive {
-					opacity: 0.5;
+					background: rgba(0, 35, 20, 0.3);
+					opacity: 0.7;
 				}
 			}
 

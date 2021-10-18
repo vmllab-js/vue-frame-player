@@ -47,7 +47,7 @@
       }
     },
     mounted() {
-      // console.log( 'config', this.config )
+      console.log( 'config', this.config )
       this.set( this.config );
 
       // 初始化所有帧
@@ -56,6 +56,10 @@
       if ( typeof initialImages === 'function' ) {
         for ( let i = 0; i < length; ++i ) {
           frameImages.push( initialImages( i, length ) );
+        }
+      } else if ( typeof initialImages === 'string' ) {
+        for ( let i = 0; i < length; ++i ) {
+          frameImages.push( initialImages.replace( '[frame]', i + 1 ) );
         }
       } else {
         frameImages = [ ...initialImages ];
@@ -212,6 +216,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+	.frame-player {
+		width: 100%;
+		height: 100%;
+	}
 	.frame-ctnr {
 		position: relative;
 		width: 100%;
