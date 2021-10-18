@@ -1,6 +1,6 @@
 {
 	"name": "vue-frame-player",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "image frames player component for vue",
 	"main": "dist/index.min.js",
 	"scripts": {
