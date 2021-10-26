@@ -17,18 +17,7 @@ npm i --save vue-frame-player
 ## Example
 html:
 ```html
-<frame-player ref="theFramePlayer" :config="{
-  imageMode: 'visible',
-  playMode: 'loop',
-  fps: 25,
-  length: 150,
-  // initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
-  initialImages: 'https://vmllab-js.github.io/vFramePlayer/image/[frame].jpg',
-  playStep: 1,
-  playSpeed: 1,
-  autoplay: true,
-  preload: true,
-}"/>
+<frame-player ref="theFramePlayer"/>
 ```
 js:
 ```javascript
@@ -38,6 +27,21 @@ export default {
     name: 'Home',
     components: {
       FramePlayer
+    },
+    mouted() {
+      const player = this.$refs.theFramePlayer;
+      player
+        .init( {
+          imageMode: 'visible',
+          playMode: 'loop',
+          length: 150,
+          // initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
+          initialImages: 'https://vmllab-js.github.io/vFramePlayer/image/[frame].jpg',
+          playStep: 1,
+          playSpeed: 1,
+          autoplay: true,
+          preload: true,
+        } );
     }
 }
 ```
@@ -50,7 +54,22 @@ css:
 }
 ```
 
-## Config Options
+## Methods
+可以使用组件的以下方法控制序列图动画：
+
+| Field           | Parameter              | Description                         | 
+| --------------- | :--------------------: | ----------------------------------- |
+| `init()`        | `config`               | 初始化序列帧播放参数，具体参数见下表 |
+| `play()`        | none                   | 播放序列图动画 |
+| `pause()`       | none                   | 暂停播放动画 |
+| `stop()`        | none                   | 重置到首帧，停止播放动画 |
+| `replay()`      | none                   | 重置到首帧，继续播放动画 |
+| `goto()`        | `frame`                | 直接跳到第`n`帧 |
+| `on()`          | `eventName`,`callback` | 添加监听事件，可以监听的事件有：play、pause、ended、loop、yoyo、update等 |
+| `off()`         | `eventName`,`callback` | 移除监听事件 |
+| `set()`         | `attr`, `value`        | 设置参数值，fps、playMode、imageMode、playStep、playSpeed |
+
+## Init Options
 | Field         | Type              | Default   | Description                           | 
 | ------------- |:-----------------:| :------:  | ------------------------------------  |
 | `imageMode`   | `string`          | `visible` | 图片帧显示模式，可选值有unique/visible/opacity/canvas，非必选 |
@@ -62,20 +81,6 @@ css:
 | `playSpeed`   | `float`           | `1`       | 动画播放加速，非必选，可以是负数，不能为0 |
 | `preload`     | `boolean`         | `false`   | 动画图片预加载 |
 | `autoplay`    | `boolean`         | `false`   | 动画自动播放，如果preload为true，就会等到预加载完成才会自动播放 |
-
-## Methods
-可以使用组件的以下方法控制序列图动画：
-
-| Field           | Parameter              | Description                         | 
-| --------------- | :--------------------: | ----------------------------------- |
-| `play()`        | none                   | 播放序列图动画 |
-| `pause()`       | none                   | 暂停播放动画 |
-| `stop()`        | none                   | 重置到首帧，停止播放动画 |
-| `replay()`      | none                   | 重置到首帧，继续播放动画 |
-| `goto()`        | `frame`                | 直接跳到第`n`帧 |
-| `on()`          | `eventName`,`callback` | 添加监听事件，可以监听的事件有：play、pause、ended、loop、yoyo、update等 |
-| `off()`         | `eventName`,`callback` | 移除监听事件 |
-| `set()`         | `attr`, `value`        | 设置参数值，fps、playMode、imageMode、playStep、playSpeed |
 
 ```javascript
 // example
