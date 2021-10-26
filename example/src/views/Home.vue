@@ -1,17 +1,7 @@
 <template>
 	<div class="home">
 		<div class="box">
-			<frame-player ref="theFramePlayer" :config="{
-			  imageMode: 'visible',
-			  playMode: 'loop',
-			  length: 150,
-			  // initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
-			  initialImages: 'https://vmllab-js.github.io/vFramePlayer/image/[frame].jpg',
-			  playStep: 1,
-			  playSpeed: 1,
-			  autoplay: true,
-			  preload: true,
-			}"/>
+			<frame-player ref="theFramePlayer"/>
 			<div class="info">
 				<div class="fps">FPS：{{player.fps}}</div>
 				<div class="current">当前帧：{{player.currentFrame}}</div>
@@ -94,6 +84,17 @@
       const player = this.$refs.theFramePlayer;
       this.player = player;
       player
+        .init( {
+          imageMode: 'visible',
+          playMode: 'loop',
+          length: 150,
+          // initialImages: ( i, length ) => require( `../assets/bg/${i + 1}.jpg` ),
+          initialImages: 'https://vmllab-js.github.io/vFramePlayer/image/[frame].jpg',
+          playStep: 1,
+          playSpeed: 1,
+          autoplay: true,
+          preload: true,
+        } )
         .on( 'play', () => {
           console.log( 'on play' )
         } )
@@ -207,7 +208,6 @@
 						width: 0%;
 						height: 100%;
 						background: #fff;
-						transition: 0.1s;
 					}
 				}
 

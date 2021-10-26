@@ -29,7 +29,7 @@
   export default {
     name: 'FramePlayer',
     props: {
-      config: Object,
+      name: String,
     },
     data() {
       return {
@@ -47,43 +47,49 @@
       }
     },
     mounted() {
-      console.log( 'config', this.config )
-      this.set( this.config );
-
-      // 初始化所有帧
-      const { initialImages, length } = this.config;
-      let frameImages = [];
-      if ( typeof initialImages === 'function' ) {
-        for ( let i = 0; i < length; ++i ) {
-          frameImages.push( initialImages( i, length ) );
-        }
-      } else if ( typeof initialImages === 'string' ) {
-        for ( let i = 0; i < length; ++i ) {
-          frameImages.push( initialImages.replace( '[frame]', i + 1 ) );
-        }
-      } else {
-        frameImages = [ ...initialImages ];
-      }
-      this.frameImages = frameImages;
-      this.frameLength = frameImages.length;
-
-      // 启动更新循环
-      this.__timer();
-
-      if ( this.config.preload ) {
-        this.__preload().then( () => {
-          if ( this.config.autoplay ) this.play();
-          this.trigger( 'loaded', { from: 'preload' } );
-        } );
-      } else {
-        if ( this.config.autoplay ) this.play();
-      }
     },
     destroyed() {
       window.cancelAnimationFrame( this._timer );
       this.off();
     },
     methods: {
+      init( config ) {
+        console.log( 'vue-frame-player init', config )
+        this.set( config );
+
+        // 初始化所有帧
+        const { initialImages, length } = config;
+        let frameImages = [];
+        if ( typeof initialImages === 'function' ) {
+          for ( let i = 0; i < length; ++i ) {
+            frameImages.push( initialImages( i, length ) );
+          }
+        } else if ( typeof initialImages === 'string' ) {
+          for ( let i = 0; i < length; ++i ) {
+            frameImages.push( initialImages.replace( '[frame]', i + 1 ) );
+          }
+        } else {
+          frameImages = [ ...initialImages ];
+        }
+        this.frameImages = frameImages;
+        this.frameLength = frameImages.length;
+
+        // 启动更新循环
+        this.__timer();
+
+        if ( config.preload ) {
+          this.__preload().then( () => {
+            if ( config.autoplay ) this.play();
+            if ( this.imageMode === 'canvas' ) this.__updateCanvas();
+            this.trigger( 'loaded', { from: 'preload' } );
+          } );
+        } else {
+          if ( config.autoplay ) this.play();
+          if ( this.imageMode === 'canvas' ) this.__updateCanvas();
+        }
+
+        return this;
+      },
       set( setting ) {
         if ( setting.fps > 0 ) this.fps = setting.fps;
         if ( setting.playStep > 0 ) this.playStep = setting.playStep;
