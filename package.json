@@ -1,0 +1,57 @@
+{
+	"name": "vue-frame-player",
+	"version": "3.0.4",
+	"private": false,
+	"keyword": "vue frame-player",
+	"description": "基于vue的图片序列帧播放组件",
+	"author": "Rhine.Liu",
+	"main": "packages/FramePlayer/index.js",
+	"scripts": {
+		"serve": "vue-cli-service serve",
+		"build": "vue-cli-service build",
+		"lint": "vue-cli-service lint"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"core-js": "^3.6.5",
+		"vue": "^3.0.0",
+		"vue-class-component": "^8.0.0-0",
+		"vue-router": "^4.0.0-0",
+		"vuex": "^4.0.0-0",
+		"@typescript-eslint/eslint-plugin": "^4.18.0",
+		"@typescript-eslint/parser": "^4.18.0",
+		"@vue/cli-plugin-babel": "~4.5.12",
+		"@vue/cli-plugin-eslint": "~4.5.12",
+		"@vue/cli-plugin-router": "~4.5.12",
+		"@vue/cli-plugin-typescript": "~4.5.12",
+		"@vue/cli-plugin-vuex": "~4.5.12",
+		"@vue/cli-service": "~4.5.12",
+		"@vue/compiler-sfc": "^3.0.0",
+		"@vue/eslint-config-typescript": "^7.0.0",
+		"eslint": "^6.7.2",
+		"eslint-plugin-vue": "^7.0.0",
+		"node-sass": "^4.12.0",
+		"sass-loader": "^8.0.2",
+		"typescript": "~4.1.5"
+	},
+	"eslintConfig": {
+		"root": true,
+		"env": {
+			"node": true
+		},
+		"extends": [
+			"plugin:vue/vue3-essential",
+			"eslint:recommended",
+			"@vue/typescript/recommended"
+		],
+		"parserOptions": {
+			"ecmaVersion": 2020
+		},
+		"rules": {}
+	},
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not dead"
+	]
+}

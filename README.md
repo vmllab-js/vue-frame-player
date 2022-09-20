@@ -1,6 +1,6 @@
 # vue-frame-player
 
-`vue2`图片序列帧播放组件，支持通过img/canvas播放，可控制播放速度，可循环播放、倒序播放，设置循环播放及监听事件等功能。
+`vue`图片序列帧播放组件，支持通过img/canvas播放，可控制播放速度，可循环播放、倒序播放，设置循环播放及监听事件等功能。
 
 ## Github
 https://github.com/vmllab-js/vue-frame-player
@@ -12,6 +12,10 @@ https://vmllab-js.github.io/vue-frame-player/
 Using npm:
 ```
 npm i --save vue-frame-player
+```
+vue2:
+```
+npm i --save vue-frame-player@2.0.0
 ```
 
 ## Example
